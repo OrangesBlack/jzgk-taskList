@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link rel="stylesheet" href="dist/css/site.min.css">
+    <link rel="stylesheet" href="custom/css/index.css">
+    <link rel="stylesheet" href="assets/css/style.css"/>
+
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/moment.min.js"></script>
+    <script src="assets/js/script.js"></script>
+    <script type="text/javascript" src="dist/js/site.min.js"></script>
+</head>
+<body>
+
+<!-- 时钟 -->
+<div class="clock">
+    <div id="clock" class="light">
+        <div class="displays">
+            <div class="weekdays"></div>
+            <div class="ampm"></div>
+            <div class="alarm"></div>
+            <div class="digits"></div>
+        </div>
+    </div>
+
+    <div class="button-holder">
+        <a id="switch-theme" class="button">Switch Theme</a>
+        <a class="alarm-button"></a>
+    </div>
+
+    <!-- The dialog is hidden with css -->
+    <div class="overlay">
+
+        <div id="alarm-dialog">
+            <h2>Set alarm after</h2>
+            <label class="hours">
+                Hours
+                <input type="number" value="0" min="0" />
+            </label>
+
+            <label class="minutes">
+                Minutes
+                <input type="number" value="0" min="0" />
+            </label>
+
+            <label class="seconds">
+                Seconds
+                <input type="number" value="0" min="0" />
+            </label>
+
+            <div class="button-holder">
+                <a id="alarm-set" class="button blue">Set</a>
+                <a id="alarm-clear" class="button red">Clear</a>
+            </div>
+
+            <a class="close"></a>
+
+        </div>
+
+    </div>
+
+    <div class="overlay">
+        <div id="time-is-up">
+            <h2>Time&#39;s up!</h2>
+            <div class="button-holder">
+                <a class="button blue">Close</a>
+            </div>
+        </div>
+    </div>
+
+    <audio id="alarm-ring" preload>
+        <source src="assets/audio/ticktac.mp3" type="audio/mpeg" />
+        <source src="assets/audio/ticktac.ogg" type="audio/ogg" />
+    </audio>
+</div>
+
+
+
+<!-- 任务清单 -->
+<div class="wrap">
+    <!-- 添加任务 -->
+    <div class="wrap-left">
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <h3 class="panel-title">任务清单</h3>
+            </div>
+            <div class="panel-body">
+
+                <div class="task-title">
+                    <span class="heading-note">标题</span>
+                    <input type="text" id="t-title" class="form-control" placeholder="标题">
+                </div>
+
+                <div class="task-remarks">
+                    <span class="heading-note">备注</span>
+                    <input type="text" id="t-remark" class="form-control" placeholder="标题">
+                </div>
+
+                <div class="task-type">
+                    <span class="heading-note">类型</span>
+                    <select id="task-type" class="selecter_3">
+                        <option value="1">工作</option>
+                        <option value="2">生活</option>
+                        <option value="3">娱乐</option>
+                        <option value="4">购物</option>
+                    </select>
+                </div>
+                <div class="task-submit">
+                    <div class="s"></div>
+                    <button id="task-submit" class="btn btn-success btn-block">添加</button>
+                    <button id="task-reset" class="btn btn-danger btn-block">重置</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- 任务清单 -->
+    <div class="wrap-right">
+        <table id="task-list" class="table">
+            <tr>
+                <th>序号</th>
+                <th>标题</th>
+                <th>备注</th>
+                <th>类型</th>
+                <th>选项</th>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<script>
+    // 添加任务清单
+    $("#task-submit").click(function submitTaskContent() {
+        var task_title = $("#t-title").val();
+        var task_remark = $("#t-remark").val();
+        var task_type = $("#task-type  option:selected").text();
+
+        var content = "<tr class=\"info\">" +
+            "<td>1</td>" +
+                "<td>"+task_title+"</td>" +
+                "<td>"+task_remark+"</td>" +
+                "<td>"+task_type+"</td>" +
+                "<td>优先 | 完成</td>" +
+            "</tr>";
+        $("#task-list").append(content);
+    })
+</script>
+</body>
+</html>
