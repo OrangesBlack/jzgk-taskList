@@ -77,8 +77,6 @@
     </audio>
 </div>
 
-
-
 <!-- 任务清单 -->
 <div class="wrap">
     <!-- 添加任务 -->
@@ -87,16 +85,18 @@
             <div class="panel-heading">
                 <h3 class="panel-title">任务清单</h3>
             </div>
-            <div class="panel-body">
 
-                <div class="task-title">
-                    <span class="heading-note">标题</span>
-                    <input type="text" id="t-title" class="form-control" placeholder="标题">
+            <div class="panel-body">
+                <div id="input-title" class="form-group has-error has-feedback">
+                    <label for="t-title" class="control-label">标题</label>
+                    <input type="text" id="t-title" class="form-control" placeholder="输入不能为空" onkeyup="changeIuputStatusColor(1)">
+                    <span id="title-icon" class="glyphicon glyphicon-remove form-control-feedback"></span>
                 </div>
 
-                <div class="task-remarks">
-                    <span class="heading-note">备注</span>
-                    <input type="text" id="t-remark" class="form-control" placeholder="标题">
+                <div id="input-remark" class="form-group has-error has-feedback">
+                    <label for="t-remark" class="control-label">备注</label>
+                    <input type="text" id="t-remark" class="form-control" placeholder="输入不能为空" onkeyup="changeIuputStatusColor(2)">
+                    <span id="remark-icon" class="glyphicon glyphicon-remove form-control-feedback"></span>
                 </div>
 
                 <div class="task-type">
@@ -110,8 +110,8 @@
                 </div>
                 <div class="task-submit">
                     <div class="s"></div>
-                    <button id="task-submit" class="btn btn-success btn-block">添加</button>
-                    <button id="task-reset" class="btn btn-danger btn-block">重置</button>
+                    <button id="task-submit" class="btn btn-success btn-block" onclick="submitTaskContent()">添加</button>
+                    <button id="task-reset" class="btn btn-danger btn-block" onclick="resetTaskContent()">重置</button>
                 </div>
 
             </div>
@@ -125,28 +125,141 @@
                 <th>标题</th>
                 <th>备注</th>
                 <th>类型</th>
-                <th>选项</th>
+                <th>状态</th>
             </tr>
         </table>
     </div>
 </div>
 
+
+
+
+
 <script>
-    // 添加任务清单
-    $("#task-submit").click(function submitTaskContent() {
+    var count = 1;
+
+    /* -------------------------------------------------------- 主要函数 -------------------------------------------------------- */
+
+    /**
+     * 添加任务内容
+     */
+    function submitTaskContent() {
+        // 1.获取标签属性值
         var task_title = $("#t-title").val();
         var task_remark = $("#t-remark").val();
         var task_type = $("#task-type  option:selected").text();
 
-        var content = "<tr class=\"info\">" +
-            "<td>1</td>" +
+        // 2.输入内容为空校验
+        if (task_title == '' || task_title == undefined || task_title == null) {
+            $("#input-title").prop("class","form-group has-error has-feedback");
+            return 0;
+        }
+        if (task_remark == '' || task_remark == undefined || task_remark == null) {
+            $("#input-remark").prop("class","form-group has-error has-feedback");
+            return 0;
+        }
+
+        // 3.添加任务标签
+        var content =
+            "<tr id= 'task"+count+"' class='info' onclick='finishTask("+count+")' onmouseover='changeWarnning("+count+")' onmouseout='changeInfo("+count+")'>" +
+                "<td>"+count+"</td>" +
                 "<td>"+task_title+"</td>" +
                 "<td>"+task_remark+"</td>" +
                 "<td>"+task_type+"</td>" +
-                "<td>优先 | 完成</td>" +
+                "<td><span id ='lab"+count+"' class='label label-primary'>未完成</span></td>" +
             "</tr>";
         $("#task-list").append(content);
-    })
+        // 4.ID + 1
+
+        // 5.内容重置
+        resetTaskContent();
+        count ++;
+    }
+
+    /**
+     * 重置任务内容
+     */
+    function resetTaskContent(){
+        // 1.获取标签属性值
+        $("#t-title").val("");
+        $("#t-remark").val("");
+
+        // 2.文本框样式重置
+        $("#input-title").prop("class","form-group has-error has-feedback");
+        $("#input-remark").prop("class","form-group has-error has-feedback");
+
+        // 3.图标重置
+        $("#title-icon").prop("class","glyphicon glyphicon-remove form-control-feedback");
+        $("#remark-icon").prop("class","glyphicon glyphicon-remove form-control-feedback");
+    }
+
+
+    /* -------------------------------------------------------- 辅助函数 -------------------------------------------------------- */
+
+    /**
+     * 改变输入框样式
+     *      1.颜色改变
+     *      2.图标改变
+     */
+    function changeIuputStatusColor(iuputId){
+
+        if(iuputId == 1){
+            var task_title = $("#t-title").val().length;
+            if(task_title <= 0){
+                $("#input-title").prop("class","form-group has-error has-feedback");
+                $("#title-icon").prop("class","glyphicon glyphicon-remove form-control-feedback");
+            }
+            else{
+                $("#input-title").prop("class","form-group has-success has-feedback");
+                $("#title-icon").prop("class","glyphicon glyphicon-ok form-control-feedback");
+            }
+        }
+
+        else if(iuputId == 2){
+            var task_remark = $("#t-remark").val().length;
+            if(task_remark <= 0){
+                $("#input-remark").prop("class","form-group has-error has-feedback");
+                $("#remark-icon").prop("class","glyphicon glyphicon-remove form-control-feedback");
+            }
+            else{
+                $("#input-remark").prop("class","form-group has-success has-feedback");
+                $("#remark-icon").prop("class","glyphicon glyphicon-ok form-control-feedback");
+            }
+        }
+    }
+
+    /**
+     * 完成任务清单
+     */
+    function finishTask(id){
+        // 1.更改标签样式
+        $("#task"+id+"").prop("class","success");
+        $("#lab"+id+"").prop("class","label label-success");
+        $("#lab"+id+"").text("已完成");
+        // 2.去除标签事件
+        $("#task"+id+"").removeAttr("onmouseover");
+        $("#task"+id+"").removeAttr("onmouseout");
+        $("#task"+id+"").removeAttr("onclick");
+    }
+
+    /**
+     * 移到任务，改变颜色
+     */
+    function changeWarnning(id){
+        // 更改标签样式
+        $("#task"+id+"").prop("class","warning");
+        $("#lab"+id+"").prop("class","label label-warning");
+    }
+
+    /**
+     * 移出任务，改变颜色
+     */
+    function changeInfo(id){
+        // 更改标签样式
+        $("#task"+id+"").prop("class","info");
+        $("#lab"+id+"").prop("class","label label-primary");
+    }
+
 </script>
 </body>
 </html>
